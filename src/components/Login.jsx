@@ -1,97 +1,66 @@
-import axios from 'axios';
 import { useState } from 'react';
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { useHistory } from "react-router-dom";
+import Success from "./Success";
 
 const formDataObj = {
-  adSoyad: '',
   email: '',
-  departman: '',
-  unvan: '',
-  gorevler: '',
+  password: '',
+  terms: false
 };
-export default function FormContainer(props) {
-  const { addUser } = props;
 
+export default function Login() {
   const [formData, setFormData] = useState(formDataObj);
+  const [isValid, setIsValid] = useState(false);
+  const history = useHistory()
 
-  function handleChange(e) {
-    const { name, value } = e.target;
+  function handleChange(event) {
+    const { name, value } = event.target;
     const newState = { ...formData, [name]: value };
     setFormData(newState);
   }
 
   function handleSubmit(event) {
     event.preventDefault();
-    axios
-      .post('https://reqres.in/api/users', formData)
-      .then((res) => {
-        console.log(res);
-        addUser(res.data);
-        setFormData(formDataObj);
-      })
-      .catch((err) => console.log(err));
   }
 
   return (
     <Form onSubmit={handleSubmit}>
       <FormGroup>
-        <Label for="adSoyad">Ad Soyad:</Label>
-        <Input
-          id="adSoyad"
-          name="adSoyad"
-          placeholder="Çalışanın tam adı ve soyadı"
-          type="text"
-          onChange={handleChange}
-          value={formData.adSoyad}
-        />
-      </FormGroup>
-      <FormGroup>
         <Label for="email">Email</Label>
         <Input
           id="email"
           name="email"
-          placeholder="Kurumsal email adresi"
+          placeholder="Email adresinizi giriniz"
           type="email"
           onChange={handleChange}
           value={formData.email}
         />
       </FormGroup>
       <FormGroup>
-        <Label for="departman">Departman</Label>
+        <Label for="password">Şifre</Label>
         <Input
-          id="departman"
+          id="password"
+          name="password"
+          placeholder="Şifrenizi giriniz"
+          type="password"
+          onChange={handleChange}
+          value={formData.password}
+        />
+      </FormGroup>
+      <FormGroup>
+      <Input
+          id="checkbox"
           name="departman"
-          placeholder="Çalıştığı departman"
-          type="text"
+          type="checkbox"
           onChange={handleChange}
           value={formData.departman}
         />
+        <Label for="checkbox">Şartları kabul ediyorum.</Label>
       </FormGroup>
       <FormGroup>
-        <Label for="unvan">Ünvan</Label>
-        <Input
-          id="unvan"
-          name="unvan"
-          placeholder="Çalışanın ünvanı"
-          type="text"
-          onChange={handleChange}
-          value={formData.unvan}
-        />
+      <Button disabled={isValid}>Kaydet</Button>
       </FormGroup>
-
-      <FormGroup>
-        <Label for="gorevler">Takım İçi Görevleri</Label>
-        <Input
-          id="gorevler"
-          name="gorevler"
-          type="textarea"
-          placeholder="Çalışanın takım içerisindeki görev listesi"
-          rows="8"
-          onChange={handleChange}
-          value={formData.gorevler}
-        />
-      </FormGroup>
-      <Button>Kaydet</Button>
     </Form>
   );
 }
